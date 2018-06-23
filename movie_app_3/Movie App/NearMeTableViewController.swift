@@ -140,10 +140,10 @@ class NearMeTableViewController: UITableViewController {
             
             SharedNetworking.sharedInstance.hideNetworkIndicator()
         }
-//        if (self.refreshControl?.isRefreshing)! {
-//            self.refreshControl?.endRefreshing()
-//            print("end refreshing")
-//        }
+        if (self.refreshControl?.isRefreshing)! {
+            self.refreshControl?.endRefreshing()
+            print("end refreshing")
+        }
     }
     
 
@@ -215,6 +215,10 @@ class NearMeTableViewController: UITableViewController {
         print(movie.title)
         
         cell.movieLabel.text = movie.title
+        
+//        downloadImage(posterPath: movie.imageURL, index: indexPath.row) { (thumbImage) in
+//            cell.movieImage.image = thumbImage
+//        }
         
         return cell
     }
@@ -391,6 +395,9 @@ class NearMeTableViewController: UITableViewController {
         print()
         
         var title = ""
+        var preferredImage: Dictionary<String, Any>
+        var imageURL = ""
+        var formattedImageURL = ""
         var showtimes: [Dictionary<String, Any>]
         
         for index in 0..<numIssues {
@@ -400,12 +407,18 @@ class NearMeTableViewController: UITableViewController {
             if (issues[index]["title"] != nil) {
                 
                 title = (issues[index]["title"] as! String)
+                preferredImage = (issues[index]["preferredImage"] as! Dictionary<String, Any>)
+                imageURL = (preferredImage["uri"] as! String)
+                formattedImageURL = "https://developer.tmsimg.com/\(imageURL)?api_key=jbxsdaywdw3vfawhcjtyangk"
+                
                 showtimes = issues[index]["showtimes"] as! [Dictionary<String, Any>]
                 
                 print("title: \(title)")
+                print("imageURL: \(imageURL)")
+                print("formattedImageURL: \(formattedImageURL)")
                 print("showtimes: \(showtimes)")
                 
-                guard let movie = Movie(title: title, showtimes: showtimes)
+                guard let movie = Movie(title: title, imageURL: formattedImageURL, showtimes: showtimes)
                     else {fatalError("Unable to instantiate movie")
                 }
                 
@@ -433,6 +446,66 @@ class NearMeTableViewController: UITableViewController {
         let newDate = dateFormatter.string(from: someDateTime!)
         
         return newDate
+    }
+    
+    
+    // Attribution: - https://stackoverflow.com/questions/39813497/swift-3-display-image-from-url
+    
+    func downloadImage(posterPath: String, index: Int, completion: @escaping (UIImage) -> Void) {
+        
+        var image = UIImage()
+        
+        let posterURL = URL(string: posterPath)
+        print("poster url: \(String(describing: posterURL))")
+        
+        
+        // Creating a session object with the default configuration.
+        let session = URLSession(configuration: .default)
+        
+        
+        // Define a download task. The download task will download the contents of the URL as a Data object.
+        let downloadPicTask = session.dataTask(with: posterURL!) { (data, response, error) in
+            // The download has finished.
+            if let e = error {
+                
+                self.connectionFailed()
+                
+                print("Error downloading picture: \(e)")
+                
+            } else {
+                
+                if let res = response as? HTTPURLResponse {
+                    print("Downloaded picture with response code \(res.statusCode)")
+                    if let imageData = data {
+                        
+                        // convert data into an image
+                        image = UIImage(data: imageData)!
+                        
+                        DispatchQueue.main.async {
+                            completion(image)
+                        }
+                    }
+                    else {
+                        print("Couldn't get image: Image is nil")
+                    }
+                } else {
+                    print("Couldn't get response code")
+                }
+            }
+        }
+        
+        downloadPicTask.resume()
+    }
+    
+    
+    func connectionFailed(){
+        
+        let alert:UIAlertController = UIAlertController(title: "Error", message: "Connection Failed", preferredStyle: UIAlertControllerStyle.alert)
+        
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+        
+        //progressView?.isHidden = true
     }
 }
 
@@ -468,6 +541,10 @@ extension NearMeTableViewController : CLLocationManagerDelegate {
     
 }
 
+
+// https://data.tmsapi.com/v1.1/movies/assets/p13446354_p_v5_ad.jpg?api_key=jbxsdaywdw3vfawhcjtyangk
+
+//var movieData = '<div class="tile"><img src="http://developer.tmsimg.com/' + movie.preferredImage.uri + '?api_key='+apikey+'"><br/>';
 
 
 

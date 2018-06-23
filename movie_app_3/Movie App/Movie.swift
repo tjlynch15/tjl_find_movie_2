@@ -18,12 +18,13 @@ class Movie {
     //MARK: Properties
     
     let title: String
+    let imageURL: String
     let showtimes: [Dictionary<String, Any>]
     
 
     //MARK: Initialization
     
-    init?(title: String, showtimes: [Dictionary<String, Any>]) {
+    init?(title: String, imageURL: String, showtimes: [Dictionary<String, Any>]) {
         
         // The name must not be empty
         guard !title.isEmpty else {
@@ -33,6 +34,7 @@ class Movie {
         
         // Initialize stored properties.
         self.title = title
+        self.imageURL = imageURL
         self.showtimes = showtimes
        
             }
@@ -41,7 +43,7 @@ class Movie {
     //> Movie Object: title=?, showtimes=?
     func dumpMovieObject() {
         
-        print("Movie Object: \(self.title), \(String(describing: self.showtimes))")
+        print("Movie Object: \(self.title), \(self.imageURL) \(String(describing: self.showtimes))")
         
     }
     

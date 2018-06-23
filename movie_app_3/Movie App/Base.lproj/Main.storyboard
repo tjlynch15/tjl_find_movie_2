@@ -681,7 +681,7 @@
             </objects>
             <point key="canvasLocation" x="19" y="2420"/>
         </scene>
-        <!--Near Me Table View Controller-->
+        <!--Near Me-->
         <scene sceneID="hoQ-l7-k4g">
             <objects>
                 <tableViewController id="fAl-vJ-RzJ" customClass="NearMeTableViewController" customModule="Movie_App" customModuleProvider="target" sceneMemberID="viewController">
@@ -693,7 +693,7 @@
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="MoviesTableViewCell" rowHeight="120" id="J5H-Kx-Nba" customClass="MoviesTableViewCell" customModule="Movie_App" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="375" height="120"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.80000000000000004" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="J5H-Kx-Nba" id="dPt-s4-7g9">
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="J5H-Kx-Nba" id="dPt-s4-7g9">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="120"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
@@ -706,8 +706,8 @@
                                                         <constraint firstAttribute="height" constant="84" id="Etx-VF-oj2"/>
                                                     </constraints>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oxO-JR-Q1g">
-                                                    <rect key="frame" x="126" y="13" width="177" height="34"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oxO-JR-Q1g">
+                                                    <rect key="frame" x="126" y="13" width="177" height="48"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="177" id="dIi-Fa-URg"/>
                                                     </constraints>
@@ -724,7 +724,7 @@
                                                 <constraint firstItem="MdG-Xn-pEY" firstAttribute="top" secondItem="ihW-6a-PU1" secondAttribute="top" constant="13" id="74a-3O-gA7"/>
                                                 <constraint firstItem="oxO-JR-Q1g" firstAttribute="leading" secondItem="MdG-Xn-pEY" secondAttribute="trailing" constant="44" id="LIb-xf-R3L"/>
                                                 <constraint firstAttribute="trailing" secondItem="oxO-JR-Q1g" secondAttribute="trailing" constant="48" id="ZXB-17-zDM"/>
-                                                <constraint firstAttribute="bottom" secondItem="oxO-JR-Q1g" secondAttribute="bottom" constant="63" id="y83-4H-pkA"/>
+                                                <constraint firstAttribute="bottom" secondItem="oxO-JR-Q1g" secondAttribute="bottom" constant="49" id="y83-4H-pkA"/>
                                             </constraints>
                                         </view>
                                     </subviews>
@@ -735,8 +735,8 @@
                                         <constraint firstItem="ihW-6a-PU1" firstAttribute="leading" secondItem="dPt-s4-7g9" secondAttribute="leadingMargin" constant="-4" id="mCB-dz-r4Z"/>
                                     </constraints>
                                 </tableViewCellContentView>
-                                <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <connections>
+                                    <outlet property="movieImage" destination="MdG-Xn-pEY" id="h0P-80-TiO"/>
                                     <outlet property="movieLabel" destination="oxO-JR-Q1g" id="Rw5-xf-cG2"/>
                                     <segue destination="1qF-Nd-8VD" kind="show" identifier="showtimesSegue" id="0Ih-lo-qcL"/>
                                 </connections>
@@ -747,7 +747,7 @@
                             <outlet property="delegate" destination="fAl-vJ-RzJ" id="QiZ-uR-UfU"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="n8O-AI-vqI">
+                    <navigationItem key="navigationItem" title="Near Me" id="n8O-AI-vqI">
                         <barButtonItem key="leftBarButtonItem" title="Date" id="cIu-sD-M3z">
                             <connections>
                                 <segue destination="rvT-l6-eCA" kind="presentation" identifier="popoverSegue" modalPresentationStyle="currentContext" id="KU4-gY-ObU"/>
@@ -759,6 +759,10 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="lvA-XV-bZ8">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </refreshControl>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WMr-RU-QNn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
