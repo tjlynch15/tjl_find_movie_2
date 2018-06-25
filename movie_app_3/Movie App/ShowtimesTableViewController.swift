@@ -66,7 +66,7 @@ class ShowtimesTableViewController: UITableViewController, ShowtimeCellDelegate 
         
         var name: String
         var dateTime: String
-        var ticketURI: String
+        var ticketURI: String = ""
         
         let showtime = passedShowtimes?[indexPath.row]
         
@@ -110,15 +110,14 @@ class ShowtimesTableViewController: UITableViewController, ShowtimeCellDelegate 
         cell.ticketButton.layer.borderWidth = 1
         cell.ticketButton.layer.borderColor = UIColor.black.cgColor
         
-        if (compareTimes(timeString: showTime, dayString: day)) {
-            
+        
+        if (compareTimes(timeString: showTime, dayString: day)) && (ticketURI != "") {
             cell.ticketButton.backgroundColor = UIColor.blue
             cell.ticketButton.isEnabled = true
         }
         else {
             cell.ticketButton.isEnabled = false
             cell.ticketButton.backgroundColor = UIColor.clear
-            
         }
             
         cell.selectionStyle = UITableViewCellSelectionStyle.none
@@ -156,17 +155,19 @@ class ShowtimesTableViewController: UITableViewController, ShowtimeCellDelegate 
             
         }
         
-        SharedNetworking.sharedInstance.showNetworkIndicator()
         
-        let url = URL(string: newTicketURI)!
-        
-        if #available(iOS 10.0, *) {
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-        } else {
-            UIApplication.shared.openURL(url)
+        if let url = URL(string: newTicketURI) {
+            
+            SharedNetworking.sharedInstance.showNetworkIndicator()
+            
+            if #available(iOS 10.0, *) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            } else {
+                UIApplication.shared.openURL(url)
+            }
+            
+            SharedNetworking.sharedInstance.hideNetworkIndicator()
         }
-        
-        SharedNetworking.sharedInstance.hideNetworkIndicator()
     }
     
 

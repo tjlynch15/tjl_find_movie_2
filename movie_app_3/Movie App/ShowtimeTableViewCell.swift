@@ -17,25 +17,19 @@ protocol ShowtimeCellDelegate: class {
 
 class ShowtimeTableViewCell: UITableViewCell {
 
+    
     @IBOutlet weak var theaterNameLabel: UILabel!
-    
     @IBOutlet weak var dateTimeLabel: UILabel!
-    
-    @IBOutlet weak var ticketButton: UIButton!
-    
     @IBOutlet weak var timeLabel: UILabel!
     
-    
-    
+    @IBOutlet weak var ticketButton: UIButton!
     
     weak var cellDelegate: ShowtimesTableViewController?
     
     
     @IBAction func buttonPressed(_ sender: UIButton) {
-       cellDelegate?.didPressButton(sender.tag)
-        
+         cellDelegate?.didPressButton(sender.tag)
     }
-    
  
     override func awakeFromNib() {
         super.awakeFromNib()
