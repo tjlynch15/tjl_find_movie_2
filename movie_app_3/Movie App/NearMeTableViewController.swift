@@ -23,6 +23,7 @@ class NearMeTableViewController: UITableViewController {
     var currentLocation: CLLocation?
     var useCurrentLoc = true
     var zipCode = ""
+    var convertedDate = ""
     
     
     override func viewDidLoad() {
@@ -98,18 +99,27 @@ class NearMeTableViewController: UITableViewController {
         print("my long: \(myLongitude)")
         print("my lat: \(myLatitude)")
         
-        let currentDate = NSDate()
-        print(currentDate)
         
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        let convertedDate = dateFormatter.string(from: currentDate as Date)
-        print("converted date: \(convertedDate)")
+        if convertedDate == "" {
+            let currentDate = NSDate()
+            print(currentDate)
+            
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            convertedDate = dateFormatter.string(from: currentDate as Date)
+            print("converted date: \(convertedDate)")
+        }
         
         let defaults = UserDefaults.standard
         let selected_radius = defaults.string(forKey: "selected_radius")!
         print("selected radius: \(selected_radius)")
         
-        urlString = "https://data.tmsapi.com/v1.1/movies/showings?startDate=\(convertedDate)&lat=\(myLatitude)&lng=\(myLongitude)&radius=\(selected_radius)&api_key=jbxsdaywdw3vfawhcjtyangk"
+        if zipCode == "" {
+            urlString = "https://data.tmsapi.com/v1.1/movies/showings?startDate=\(convertedDate)&lat=\(myLatitude)&lng=\(myLongitude)&radius=\(selected_radius)&api_key=jbxsdaywdw3vfawhcjtyangk"
+        }
+            
+        else {
+            urlString = "https://data.tmsapi.com/v1.1/movies/showings?startDate=\(convertedDate)&zip=\(zipCode)&radius=\(selected_radius)&api_key=jbxsdaywdw3vfawhcjtyangk"
+        }
         
         print(urlString)
         
@@ -191,12 +201,10 @@ class NearMeTableViewController: UITableViewController {
     // MARK: - Table view data source
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 1
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         return movies.count
     }
     
@@ -267,121 +275,27 @@ class NearMeTableViewController: UITableViewController {
         if let sourceViewController = sender.source as? SetLocationViewController {
             
             if sourceViewController.useCurrentLocation == true {
-                
                 useCurrentLoc = true
-                self.viewDidLoad()
-                return
+                zipCode = ""
+                locationManager.requestLocation()
             }
-            
-            useCurrentLoc = false
-            zipCode = sourceViewController.passedZipCode!
-            
-            print("zip code: \(zipCode)")
-            
-            self.tableView.removeFromSuperview()
-            
-            let currentDate = NSDate()
-            print(currentDate)
-            
-            dateFormatter.dateFormat = "yyyy-MM-dd"
-            let convertedDate = dateFormatter.string(from: currentDate as Date)
-            print("converted date: \(convertedDate)")
-            
-            let defaults = UserDefaults.standard
-            let selected_radius = defaults.string(forKey: "selected_radius")!
-            print("selected radius: \(selected_radius)")
-            
-            
-            urlString = "https://data.tmsapi.com/v1.1/movies/showings?startDate=\(convertedDate)&zip=\(zipCode)&radius=\(selected_radius)&api_key=jbxsdaywdw3vfawhcjtyangk"
-            
-            
-            print(urlString)
-            
-            SharedNetworking.sharedInstance.showNetworkIndicator()
-            
-            SharedNetworking.sharedInstance.getIssues2(url: urlString) { (issues) in
-                
-                self.createDictionary(issues: issues!)
-                
-                // The data is available in this closure through the `issues` variable
-                
-                // Copy the `issues` to a property of the view controller so that it can
-                // persist beyond the closure block.  The property should
-                // be of the same type as the parameter here (eg [[String: AnyObject]]?)
-                
-                // Reload the table.  The tables data source should be the property you copied the
-                // issues to (above). Remember to refresh the table on the main thread
-                
-                DispatchQueue.main.async {
-                    // Anything in here is execute on the main thread
-                    // You should reload your table here.
-                    
-                    self.tableView.reloadData()
-                }
-                
-                // For debugging
-                //print(issues as Any)
-                
-                SharedNetworking.sharedInstance.hideNetworkIndicator()
+            else {
+                useCurrentLoc = false
+                zipCode = sourceViewController.passedZipCode!
+                print("zip code: \(zipCode)")
+                getMovies()
             }
         }
     }
+  
     
     @IBAction func unwindToTheaterList2(sender: UIStoryboardSegue) {
         
         if let sourceViewController = sender.source as? PopoverViewController {
-            
-           
             let date = sourceViewController.passedDate!
             print("date: \(date)")
-            
-            self.tableView.removeFromSuperview()
-            
-            let myLongitude = "\(String(describing: currentLocation?.coordinate.longitude))"
-            let myLatitude = "\(String(describing: currentLocation?.coordinate.latitude))"
-            
-            let defaults = UserDefaults.standard
-            let selected_radius = defaults.string(forKey: "selected_radius")!
-            print("selected radius: \(selected_radius)")
-            
-            
-            if useCurrentLoc {
-                urlString = "https://data.tmsapi.com/v1.1/movies/showings?startDate=\(date)&lat=\(myLatitude)&lng=\(myLongitude)&radius=\(selected_radius)&api_key=jbxsdaywdw3vfawhcjtyangk"
-            }
-            else {
-                urlString = "https://data.tmsapi.com/v1.1/movies/showings?startDate=\(date)&zip=\(zipCode)&radius=\(selected_radius)&api_key=jbxsdaywdw3vfawhcjtyangk"
-            }
-            print(urlString)
-            
-            
-            SharedNetworking.sharedInstance.showNetworkIndicator()
-            
-            SharedNetworking.sharedInstance.getIssues2(url: urlString) { (issues) in
-                
-                self.createDictionary(issues: issues!)
-                
-                // The data is available in this closure through the `issues` variable
-                
-                // Copy the `issues` to a property of the view controller so that it can
-                // persist beyond the closure block.  The property should
-                // be of the same type as the parameter here (eg [[String: AnyObject]]?)
-                
-                // Reload the table.  The tables data source should be the property you copied the
-                // issues to (above). Remember to refresh the table on the main thread
-                
-                DispatchQueue.main.async {
-                    // Anything in here is execute on the main thread
-                    // You should reload your table here.
-                    
-                    self.tableView.reloadData()
-                }
-                
-                // For debugging
-                //print(issues as Any)
-                
-                SharedNetworking.sharedInstance.hideNetworkIndicator()
-            }
-            
+            convertedDate = date
+            locationManager.requestLocation()
         }
     }
     
